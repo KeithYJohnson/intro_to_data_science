@@ -1,6 +1,6 @@
 import numpy as np
 import pandas
-from ggplot import *
+# from ggplot import *
 
 """
 In this question, you need to:
@@ -24,6 +24,9 @@ def normalize_features(df):
 
     return df_normalized, mu, sigma
 
+def predicted_values(features, theta):
+    return np.dot(feature,theta)
+
 def compute_cost(features, values, theta):
     """
     Compute the cost function given a set of features / values,
@@ -32,9 +35,9 @@ def compute_cost(features, values, theta):
     This can be the same code as the compute_cost function in the lesson #3 exercises,
     but feel free to implement your own.
     """
-
-    # your code here
-
+    sample_size = len(values)
+    sum_of_square_errors = sum(np.square(predicted_values(features,theta) - values))
+    cost = sum_of_square_errors/(2*sample_size)
     return cost
 
 def gradient_descent(features, values, theta, alpha, num_iterations):
@@ -45,11 +48,14 @@ def gradient_descent(features, values, theta, alpha, num_iterations):
     but feel free to implement your own.
     """
 
-    m = len(values)
+    sample_size = len(values)
     cost_history = []
 
     for i in range(num_iterations):
-        # your code here
+        theta = theta + (alpha/sample_size) sum(numpy.dot(values - predicted_values(features, theta),features))
+        cost = compute_cost(features,values,theta)
+        cost_history.append(cost)
+
     return theta, pandas.Series(cost_history)
 
 def predictions(dataframe):
@@ -143,9 +149,5 @@ def plot_cost_history(alpha, cost_history):
       'Cost_History': cost_history,
       'Iteration': range(len(cost_history))
    })
-   return ggplot(cost_df, aes('Iteration', 'Cost_History')) + \
-      geom_point() + ggtitle('Cost History for alpha = %.3f' % alpha )
-
-
-df = pandas.read_csv('./turnstile_data_master_with_weather.csv')
-print predictions(df)
+   # return ggplot(cost_df, aes('Iteration', 'Cost_History')) + \
+    #   geom_point() + ggtitle('Cost History for alpha = %.3f' % alpha )
