@@ -25,7 +25,7 @@ def normalize_features(df):
     return df_normalized, mu, sigma
 
 def predicted_values(features, theta):
-    return np.dot(feature,theta)
+    return np.dot(features,theta)
 
 def compute_cost(features, values, theta):
     """
@@ -52,7 +52,7 @@ def gradient_descent(features, values, theta, alpha, num_iterations):
     cost_history = []
 
     for i in range(num_iterations):
-        theta = theta + (alpha/sample_size) sum(numpy.dot(values - predicted_values(features, theta),features))
+        theta = theta + (alpha/sample_size) * np.dot(values - predicted_values(features, theta),features)
         cost = compute_cost(features,values,theta)
         cost_history.append(cost)
 
@@ -91,7 +91,15 @@ def predictions(dataframe):
     that it runs faster.
     '''
     # Select Features (try different features!)
-    features = dataframe[['rain', 'precipi', 'Hour', 'meantempi']]
+    # ,UNIT,DATEn,TIMEn,
+    # Hour,DESCn,ENTRIESn_hourly,
+    # EXITSn_hourly,maxpressurei,
+    # maxdewpti,mindewpti,
+    # minpressurei,meandewpti,
+    # meanpressurei,fog,rain,
+    # meanwindspdi,mintempi,meantempi,
+    # maxtempi,precipi,thunder
+    features = dataframe[['rain', 'precipi', 'Hour', 'mintempi']]
 
     # Add UNIT to features using dummy variables
     dummy_units = pandas.get_dummies(dataframe['UNIT'], prefix='unit')
@@ -130,8 +138,18 @@ def predictions(dataframe):
     # this in addition to your calculation will exceed
     # the 30 second limit on the compute servers.
 
+
     predictions = np.dot(features_array, theta_gradient_descent)
-    return predictions, plot
+
+                            # Returns numpy.ndarray
+    return compute_r_squared(values.values, predictions)
+    # return predictions, plot
+
+def compute_r_squared(data, predictions):
+    data_mean = np.mean(data)
+    numerator = sum(np.square(data-predictions))
+    denominator = sum(np.square(data-data_mean))
+    return 1 - numerator/denominator
 
 
 def plot_cost_history(alpha, cost_history):
@@ -151,3 +169,7 @@ def plot_cost_history(alpha, cost_history):
    })
    # return ggplot(cost_df, aes('Iteration', 'Cost_History')) + \
     #   geom_point() + ggtitle('Cost History for alpha = %.3f' % alpha )
+
+df = pandas.read_csv('turnstile_data_master_with_weather.csv')
+
+print predictions(df)
