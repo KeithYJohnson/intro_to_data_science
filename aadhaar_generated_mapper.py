@@ -36,7 +36,7 @@ def mapper():
     for line in sys.stdin:
         # Dirty check so we doint evaluate a header line
         if "Registrar" in line:
-            pass
+            continue
 
         data = line.split(",")
         district = data[DISTRICT_INDEX]
