@@ -2,6 +2,7 @@ import sys
 import string
 import logging
 
+
 # from util import mapper_logfile
 # logging.basicConfig(filename=mapper_logfile, format='%(message)s',
 #                     level=logging.INFO, filemode='w')
@@ -33,16 +34,18 @@ def mapper():
     #Note that, unlike print, logging.info will take only a single argument.
     #So logging.info("my message") will work, but logging.info("my","message") will not.
 
+
     for line in sys.stdin:
         # Dirty check so we doint evaluate a header line
-        if "Registrar" in line:
+        if "Registrar,Enrolment Agency,State," in line:
             continue
 
         data = line.split(",")
         district = data[DISTRICT_INDEX]
         aadhaar_generated = data[AADHAAR_GENERATED_INDEX]
 
-        print "{0}\t{1}".format(district,aadhaar_generated)
+        if district and district_generated:
+            print "{0}\t{1}".format(district,aadhaar_generated)
 
 
 mapper()
