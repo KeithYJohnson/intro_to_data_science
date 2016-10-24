@@ -27,7 +27,7 @@ def reducer():
     for line in sys.stdin:
         district, number_generated = line.split("\t")
 
-        if not district && number_generated:
+        if not district and number_generated:
             continue
 
         number_generated = int(number_generated)
